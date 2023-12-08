@@ -1,4 +1,4 @@
-###Personal Cohort Assignments Repository
+### Personal Cohort Assignments Repository
 Welcome to my personal Cohort Assignments repository! This collection serves as a record of all the assignments I have independently completed during the cohort. The assignments are part of the coursework provided for self-paced learning, and this repository showcases my progress and achievements.
 
 Overview
