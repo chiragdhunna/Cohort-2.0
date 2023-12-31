@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+    let todoState = [];
+    let oldTodoState = [];
+
+    
+
+    function addTodoToDom() {
+      
+      // Creating / Adding a new TODO to the dOM
+
+      const parentDiv = document.getElementById("todos");
+
+      todoState.forEach(todo => {
+        let title = document.createElement("p");
+        let description = document.createElement("p");
+        let done = document.createElement("button");
+        let todoDiv = document.createElement("div");
+        todoDiv.id = todo.id;
+        
+         title.innerHTML = todo.title;
+        description.innerHTML = todo.description;
+        done.innerHTML = "Done";
+        console.log(title);
+        done.addEventListener("click",()=>{
+          removeTodoFromDom(todo);
+        });
+        todoDiv.appendChild(title);
+        todoDiv.appendChild(description);
+        todoDiv.appendChild(done);
+        parentDiv.appendChild(todoDiv);
+      });
+    }
+
+    function removeTodoFromDom(todo) {
+      let id = todo.id;
+
+      let idx = todoState.findIndex(t => t.id === todo.id);
+
+      if(idx!=-1){
+        todoState.splice(idx,1);
+      }
+
+      let divToRemove = document.getElementById(id);
+      divToRemove.remove();
+    }
+
+    function updateTodoInDom(oldTodo, newTodo) {
+        let oldEle = document.getElementById(oldTodo.id);
+        oldEle.children[0].innerHTML = newTodo.title;
+        oldEle.children[1].innerHTML = newTodo.description;
+        oldEle.id = newTodo.id;
+
+    }
+
+    function updateState(newTodos) {
+      // calculate the diff b/w newTodos and oldTodos.
+      // More specifically, find out what todos are - 
+      // 1. added
+      // 2. deleted
+      // 3. updated
+      const added = [];
+      const deleted = [];
+      const updated = [];
+      // calculate these 3 arrays
+      // call addTodo, removeTodo, updateTodo functions on each of the
+      // elements
+
+      
+      // Checking when the new Todo is added that if that todo already exists or not?
+      // The new TO DO is added from the back, then lets first extract it
+
+      let newTodoLength = newTodos.length;
+      let lastTodo = newTodos[newTodoLength-1];
+      let flag = false;
+      for(let i=0; i<newTodoLength-2; i++){
+        if(newTodos[i].title === lastTodo.title && newTodos[i].description === lastTodo.description){
+          // If so we splice it and update the todo to new next postion
+           
+          // Adding it to the deleted and updated portion
+            // Adding to deleted the deleted DATA
+              deleted.push(newTodos[i]);
+          // First remove it from DOM and then splice it from the list
+          removeTodoFromDom(newTodos[i]);
+          newTodos.splice(i,1);
+          // Adding the new TODO
+          addTodoToDom(); // This will update the whole DOM again
+          // Adding to the updated
+            updated.push(lastTodo); 
+            flag = true;
+        }
+      }
+
+      if(!flag){
+        // Means this is new data added, means we have to call addTODOTODOM
+        addTodoToDom();
+      }
+
+      oldTodoState = newTodos;
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      todoState.push({
+        title: title,
+        description: description,
+        id: globalId++,
+      })
+      updateState(todoState);
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+  <br /> <br />
+
+  <div id="todos">
+
+  </div>
+  
+</body>
+
+</html>
